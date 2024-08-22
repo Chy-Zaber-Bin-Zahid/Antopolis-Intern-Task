@@ -6,6 +6,7 @@ const createError = require("http-errors");
 const { errorResponse } = require("./controllers/responseController");
 const cors = require("cors");
 // const animalRouter = require("./routers/animalRouter");
+const categoryRouter = require("./routers/categoryRouter");
 
 const app = express();
 
@@ -16,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 // Router
-// app.use("/api/animal", animalRouter);
+app.use("/api", categoryRouter);
 
 // Client error handling
 app.use((req, res, next) => {

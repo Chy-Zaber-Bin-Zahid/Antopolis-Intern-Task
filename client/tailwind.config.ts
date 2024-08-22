@@ -11,7 +11,8 @@ const config: Config = {
       colors: {
         'custom-green': '#058F34',
         'custom-black': '#141414',
-        'custom-bg': '#050505'
+        'custom-bg': '#050505',
+        'custom-bg-white': '#F2F2F2'
       },
     },
   },
