@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from 'react'
-import { useForm, SubmitHandler } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from '@tanstack/react-query';
+import axios from "axios";
+import { useEffect, useRef } from 'react';
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod"
 
 type AddCategoryModalProps = {
     categoryModal: Boolean,
@@ -27,10 +29,28 @@ function AddCategoryModal({ categoryModal, setCategoryModal }: AddCategoryModalP
         resolver: zodResolver(categorySchema),
     })
 
+    const addCategory = async (categoryName: string) => {
+        try {
+          const response = await axios.post('http://localhost:3001/api/add-category', { categoryName: categoryName });
+          return response.data;
+        } catch (error) {
+          throw new Error('Failed to add category');
+        }
+      };
+
+    const mutation = useMutation({
+        mutationFn: addCategory,
+        onSuccess: () => {
+          setCategoryModal(false);
+          reset();
+        },
+        onError: (error) => {
+          console.error('Error adding category:', error);
+        },
+      });
+
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        console.log(data);
-        setCategoryModal(false);
-        reset()
+        mutation.mutate(data.categoryName);
     }
 
     useEffect(() => {
@@ -45,7 +65,7 @@ function AddCategoryModal({ categoryModal, setCategoryModal }: AddCategoryModalP
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [setCategoryModal]);
+    }, [setCategoryModal, reset]);
 
     return (
         <>
